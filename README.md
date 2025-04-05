@@ -9,11 +9,13 @@
 - 详细的日志记录
 - 使用环境变量配置，安全可靠
 
-## 安装依赖
+## 安装步骤
 
-```bash
-pip install -r requirements.txt
-```
+1. 克隆项目到本地
+2. 项目运行环境管理，需要安装好pyenv，poetry
+3. 创建并配置好虚拟环境：
+   ```bash
+   poetry install --no-dev
 
 ## 配置
 
@@ -29,42 +31,25 @@ cp .env.example .env
 - `DOMAIN_NAME`: 你的主域名
 - `SUBDOMAINS`: 需要更新的子域名列表，用逗号分隔
 
-## Git 安全性
-
-为了确保敏感信息的安全：
-
-1. `.env` 文件已被添加到 `.gitignore`，不会被提交到 Git 仓库
-2. 如果 `.env` 文件已经被提交到 Git 仓库，请执行以下步骤：
-   ```bash
-   # 从 Git 历史记录中删除 .env 文件
-   git filter-branch --force --index-filter \
-   "git rm --cached --ignore-unmatch .env" \
-   --prune-empty --tag-name-filter cat -- --all
-   
-   # 强制推送到远程仓库
-   git push origin --force --all
-   ```
-
-3. 如果已经将敏感信息推送到 GitHub：
-   - 立即在阿里云控制台重新生成 AccessKey
-   - 更新本地 `.env` 文件中的新密钥
-   - 删除 GitHub 仓库中的敏感信息（如果可能）
-
 ## 使用方法
 
 直接运行脚本：
 ```bash
+python3 update_dns.py
+```
+
+```powershell
 python update_dns.py
 ```
 
 ## 设置定时任务
 
-### Linux/Mac (使用 crontab)  *采用poetry管理
+### Linux/Mac (使用 crontab)
 ```bash
 0 * * * * cd ~/service_aliyun_dns && poetry run python3 update_dns.py >> /var/log/dns_update.log 2>&1
 ```
 
-### Windows (使用 PowerShell)  *采用poetry管理
+### Windows (使用 PowerShell)
 ```powershell
 # 创建定时任务
 $Action = New-ScheduledTaskAction -Execute "poetry" -Argument "run python update_dns.py" -WorkingDirectory "D:\api\service_aliyun_dns"
