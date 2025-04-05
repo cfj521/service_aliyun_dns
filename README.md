@@ -59,10 +59,21 @@ python update_dns.py
 
 ## 设置定时任务
 
-你可以使用crontab设置定时任务，例如每小时检查一次：
-
+### Linux/Mac (使用 crontab)
 ```bash
-0 * * * * cd /path/to/script && python update_dns.py >> /var/log/dns_update.log 2>&1
+0 * * * * cd ~/service_aliyun_dns && poetry run python3 update_dns.py >> /var/log/dns_update.log 2>&1
+```
+
+### Windows (使用 PowerShell)
+```powershell
+# 创建定时任务
+$Action = New-ScheduledTaskAction -Execute "poetry" -Argument "run python update_dns.py" -WorkingDirectory "D:\api\service_aliyun_dns"
+$Trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Hours 1) -RepetitionDuration ([TimeSpan]::MaxValue)
+$Settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -DontStopOnIdleEnd -RestartInterval (New-TimeSpan -Minutes 1) -RestartCount 3
+Register-ScheduledTask -TaskName "AliyunDNSUpdater" -Action $Action -Trigger $Trigger -Settings $Settings -Description "每小时更新阿里云DNS记录" -Force
+
+# 如果需要删除任务
+# Unregister-ScheduledTask -TaskName "AliyunDNSUpdater" -Confirm:$false
 ```
 
 ## 注意事项
