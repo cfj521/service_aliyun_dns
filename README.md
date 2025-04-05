@@ -59,12 +59,12 @@ python update_dns.py
 
 ## 设置定时任务
 
-### Linux/Mac (使用 crontab)
+### Linux/Mac (使用 crontab)  *采用poetry管理
 ```bash
 0 * * * * cd ~/service_aliyun_dns && poetry run python3 update_dns.py >> /var/log/dns_update.log 2>&1
 ```
 
-### Windows (使用 PowerShell)
+### Windows (使用 PowerShell)  *采用poetry管理
 ```powershell
 # 创建定时任务
 $Action = New-ScheduledTaskAction -Execute "poetry" -Argument "run python update_dns.py" -WorkingDirectory "D:\api\service_aliyun_dns"
